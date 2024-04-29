@@ -1,0 +1,10 @@
+@BackendGateway_HostAddress = http://localhost:44400
+
+POST {{BackendGateway_HostAddress}}/identity/login
+Content-Type: application/json
+
+{
+  "email": "user@store.com",
+  "password": "pass"
+}
+###

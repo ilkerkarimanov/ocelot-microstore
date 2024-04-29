@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo
+    ports:
+       - 27017:27017
+
+  identity:
+    build:
+      context: .
+      dockerfile: src/microservices/IdentityMicroservice/IdentityMicroservice/Dockerfile
+    ports:
+      -  32898:80
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - mongo
+
+  catalog:
+    build:
+        context: .
+        dockerfile: src/microservices/CatalogMicroservice/Dockerfile
+    ports:
+        - 33892:80
+    environment:
+        - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - mongo
+
+  cart:
+    build:
+      context: .
+      dockerfile: src/microservices/CartMicroservice/Dockerfile
+    ports:
+      -  32895:80
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - mongo
+
+  frontendgw:
+    build:
+      context: .
+      dockerfile: src/gateways/FrontendGateway/Dockerfile
+    depends_on:
+      - catalog
+      - cart
+      - identity
+    ports:
+      - 44300:80
+    environment:
+        - ASPNETCORE_URLS=http://+:80
+
+  backendgw:
+    build:
+      context: .
+      dockerfile: src/gateways/BackendGateway/Dockerfile
+    depends_on:
+      - catalog
+      - identity
+    ports:
+      - 44400:80
+    environment:
+        - ASPNETCORE_URLS=http://+:80
+
+  frontend:
+    build:
+      context: .
+      dockerfile: src/ui/Frontend/Dockerfile
+    ports:
+      - 44317:80
+    environment:
+        - ASPNETCORE_URLS=http://+:80
+
+  backend:
+    build:
+      context: .
+      dockerfile: src/ui/Backend/Dockerfile
+    ports:
+      - 44301:80
+    environment:
+        - ASPNETCORE_URLS=http://+:80

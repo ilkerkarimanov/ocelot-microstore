@@ -1,0 +1,10 @@
+@FrontendGateway_HostAddress = http://localhost:44300
+
+POST {{FrontendGateway_HostAddress}}/identity/login
+Content-Type: application/json
+
+{
+  "email": "user@store.com",
+  "password": "pass"
+}
+###
